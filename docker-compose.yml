@@ -1,0 +1,37 @@
+# ./docker-compose.yml
+version: '3.8'
+
+services:
+  # Container do BFF PHP/Laravel
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ateliware-bff-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+
+  # Servidor Web para o Back-end
+  nginx:
+    image: nginx:stable-alpine3.23
+    container_name: ateliware-bff-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  # Container para servir o Front-end estático
+  frontend:
+    image: nginx:stable-alpine3.23
+    container_name: ateliware-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
