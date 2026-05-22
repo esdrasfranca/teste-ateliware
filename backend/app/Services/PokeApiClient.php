@@ -55,9 +55,7 @@ class PokeApiClient
         // Hit points (HP) do Pokémon [Requisito Funcional 3]
         $hp = $dataProcessed['base_stat'];
 
-        // Sprites = ['sprites']['front_default'] --- IGNORE ---
-        // Types = ['types'][0]['type']['name'] --- IGNORE ---
-
+        // Retorna objeto 
         return new PokemonDto(
             $data['name'],
             $hp,
