@@ -68,4 +68,74 @@ class PokemonDtoTest extends TestCase
             $this->weight
         );
     }
+
+    public function test_pokemon_dto_invalid_sprite()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new PokemonDto(
+            $this->name,
+            $this->hp,
+            '',
+            $this->type,
+            $this->speed,
+            $this->height,
+            $this->weight
+        );
+    }
+
+    public function test_pokemon_dto_invalid_type()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new PokemonDto(
+            $this->name,
+            $this->hp,
+            $this->sprite,
+            '',
+            $this->speed,
+            $this->height,
+            $this->weight
+        );
+    }
+
+    public function test_pokemon_dto_invalid_speed()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new PokemonDto(
+            $this->name,
+            $this->hp,
+            $this->sprite,
+            $this->type,
+            -10,
+            $this->height,
+            $this->weight
+        );
+    }
+
+    public function test_pokemon_dto_invalid_height()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new PokemonDto(
+            $this->name,
+            $this->hp,
+            $this->sprite,
+            $this->type,
+            $this->speed,
+            -10,
+            $this->weight
+        );
+    }
+
+    public function test_pokemon_dto_invalid_weight()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new PokemonDto(
+            $this->name,
+            $this->hp,
+            $this->sprite,
+            $this->type,
+            $this->speed,
+            $this->height,
+            -10
+        );
+    }
 }
