@@ -10,9 +10,9 @@ class BattleResultDto
     private readonly string $winner;
     private readonly string $message;
 
-    public function __construct(PokemonDto $pokemon1, PokemonDto $pokemon2, string $winner, string $message)
+    public function __construct(PokemonDto $pokemon1, PokemonDto $pokemon2, ?string $winner, string $message)
     {
-        $this->validate($winner, $message);
+        $this->validate($message);
         $this->pokemon1 = $pokemon1;
         $this->pokemon2 = $pokemon2;
         $this->winner = $winner;
@@ -39,12 +39,12 @@ class BattleResultDto
         return $this->message;
     }
 
-    private function validate(string $winner, string $message): void
+    private function validate(string $message): void
     {
 
-        if (empty($winner)) {
-            throw new \InvalidArgumentException('O nome do vencedor não pode ser vazio.');
-        }
+        // if (empty($winner)) {
+        //     throw new \InvalidArgumentException('O nome do vencedor não pode ser vazio.');
+        // }
 
         if (empty($message)) {
             throw new \InvalidArgumentException('A mensagem de resultado não pode ser vazia.');

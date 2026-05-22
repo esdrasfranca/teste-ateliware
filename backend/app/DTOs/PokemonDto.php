@@ -9,8 +9,7 @@ class PokemonDto
 {
 
     private readonly string $name;
-    private readonly int $hp;
-
+    private readonly int $hitPoint; // Hit Points
     private readonly string $sprite;
     private readonly string $type;
     private readonly int $speed;
@@ -18,11 +17,11 @@ class PokemonDto
     private readonly int $weight;
 
 
-    public function __construct(string $name, int $hp, string $sprite, string $type, int $speed, int $height, int $weight)
+    public function __construct(string $name, int $hitPoint, string $sprite, string $type, int $speed, int $height, int $weight)
     {
-        $this->validate($name, $hp, $sprite, $type, $speed, $height, $weight);
+        $this->validate($name, $hitPoint, $sprite, $type, $speed, $height, $weight);
         $this->name = $name;
-        $this->hp = $hp;
+        $this->hitPoint = $hitPoint;
         $this->sprite = $sprite;
         $this->type = $type;
         $this->speed = $speed;
@@ -37,7 +36,7 @@ class PokemonDto
 
     public function getHp(): int
     {
-        return $this->hp;
+        return $this->hitPoint;
     }
 
     public function getSprite(): string
@@ -65,14 +64,14 @@ class PokemonDto
         return $this->weight;
     }
 
-    private function validate(string $name, int $hp, string $sprite, string $type, int $speed, int $height, int $weight): void
+    private function validate(string $name, int $hitPoint, string $sprite, string $type, int $speed, int $height, int $weight): void
     {
         if (empty($name)) {
             throw new \InvalidArgumentException("O nome do Pokémon não pode ser vazio.");
         }
 
-        if ($hp < 0) {
-            throw new \InvalidArgumentException("O HP do Pokémon deve ser um número positivo.");
+        if ($hitPoint < 0) {
+            throw new \InvalidArgumentException("O Hit Point do Pokémon deve ser um número positivo.");
         }
 
         if (empty($sprite)) {
