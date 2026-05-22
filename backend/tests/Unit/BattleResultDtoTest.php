@@ -29,10 +29,6 @@ class BattleResultDtoTest extends TestCase
     private int $height2 = 7;
     private int $weight2 = 69;
 
-    private string $winner = 'Pikachu';
-    private string $message = 'Pikachu vence!';
-
-
     public function test_battle_result_dto_creation()
     {
         $pokemon1 = new PokemonDto(

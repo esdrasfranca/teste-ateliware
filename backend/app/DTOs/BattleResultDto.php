@@ -41,11 +41,6 @@ class BattleResultDto
 
     private function validate(string $message): void
     {
-
-        // if (empty($winner)) {
-        //     throw new \InvalidArgumentException('O nome do vencedor não pode ser vazio.');
-        // }
-
         if (empty($message)) {
             throw new \InvalidArgumentException('A mensagem de resultado não pode ser vazia.');
         }
