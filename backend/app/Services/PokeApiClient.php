@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\DTOs\PokemonDto;
+use App\Exceptions\HttpBadRequestException;
+use App\Exceptions\HttpNotFoundException;
 use Exception;
 
 class PokeApiClient
@@ -20,7 +22,7 @@ class PokeApiClient
         $pokemonNameNormalize = preg_replace('/[^a-z]/', '', $pokemonNameNormalize);
 
         if (empty($pokemonNameNormalize)) {
-            throw new Exception('O nome do Pokémon não pode ser vazio.');
+            throw new HttpBadRequestException('O nome do Pokémon não pode ser vazio.');
         }
 
         // Chamada a API externa
@@ -37,19 +39,11 @@ class PokeApiClient
 
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        // Verivida status code do retorno
         if ($httpCode == 404) {
-            throw new Exception("O Pokémon '{$pokemonName}' não existe.");
-        }
-
-        if ($httpCode == 400) {
-            throw new Exception();
+            throw new HttpNotFoundException("O Pokémon '{$pokemonName}' não existe.");
         }
 
         $data = json_decode($response, true);
-        // // Teste local com arquivo JSON
-        // $data = file_get_contents(__DIR__ .  "/pokemon.json");
-        // $data = json_decode($data, true);
 
         $dataProcessed = array_find($data['stats'], function ($stat) {
             // Busca o valor do HP (hit points) do Pokémon [Detalhe Técnico 5]
