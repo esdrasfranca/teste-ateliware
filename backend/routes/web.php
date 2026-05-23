@@ -1,10 +1,8 @@
 <?php
 
+use App\Http\Controllers\PokemonController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    header('Content-Type: application/json');
-    return json_encode([
-        'message' => 'Hello, World!',
-    ]);
-});
+Route::get('/api', [PokemonController::class, 'index']);
+Route::get('/api/pokemon', [PokemonController::class, 'getPokemon']);
+Route::get('/api/battle', [PokemonController::class, 'battle']);
