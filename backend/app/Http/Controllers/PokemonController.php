@@ -6,9 +6,8 @@ use App\Exceptions\HttpBadRequestException;
 use App\Exceptions\HttpNotFoundException;
 use App\Services\PokeApiClient;
 use App\Services\PokemonBattleService;
-use Exception;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PokemonController
 {
