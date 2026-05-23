@@ -64,6 +64,19 @@ class PokemonDto
         return $this->weight;
     }
 
+    public function toArray(): array
+    {
+        return array(
+            'name' => $this->name,
+            'hitPoint' => $this->hitPoint,
+            'sprite' => $this->sprite,
+            'type' => $this->type,
+            'speed' => $this->speed,
+            'height' => $this->height,
+            'weight' => $this->weight
+        );
+    }
+
     private function validate(string $name, int $hitPoint, string $sprite, string $type, int $speed, int $height, int $weight): void
     {
         if (empty($name)) {

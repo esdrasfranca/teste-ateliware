@@ -138,4 +138,29 @@ class PokemonDtoTest extends TestCase
             -10
         );
     }
+
+    public function test_pokemon_dto_to_array()
+    {
+        $pokemonDto = new PokemonDto(
+            $this->name,
+            $this->hp,
+            $this->sprite,
+            $this->type,
+            $this->speed,
+            $this->height,
+            $this->weight
+        );
+
+        $result = $pokemonDto->toArray();
+
+        // Valida se o array está no formato esperado
+        $this->assertIsArray($result);
+        $this->assertEquals($this->name, $result['name']);
+        $this->assertEquals($this->hp, $result['hitPoint']);
+        $this->assertEquals($this->sprite, $result['sprite']);
+        $this->assertEquals($this->type, $result['type']);
+        $this->assertEquals($this->speed, $result['speed']);
+        $this->assertEquals($this->height, $result['height']);
+        $this->assertEquals($this->weight, $result['weight']);
+    }
 }
