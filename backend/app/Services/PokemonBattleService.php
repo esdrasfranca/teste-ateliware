@@ -33,8 +33,7 @@ class PokemonBattleService
             $message = ucwords($pokemon2->getName()) . " venceu!";
         }
 
-        $winnerName = $winner ? $winner->getName() : '';
-        return new BattleResultDto($pokemon1, $pokemon2, $winnerName, $message);
+        return new BattleResultDto($pokemon1, $pokemon2, $winner, $message);
     }
 
     /**

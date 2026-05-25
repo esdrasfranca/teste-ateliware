@@ -49,7 +49,7 @@ class BattleResultDtoTest extends TestCase
             $this->height2,
             $this->weight2
         );
-        $winner = 'Pikachu';
+        $winner = $pokemon2;
         $message = 'Pikachu vence!';
 
         $battleResultDto = new BattleResultDto($pokemon1, $pokemon2, $winner, $message);

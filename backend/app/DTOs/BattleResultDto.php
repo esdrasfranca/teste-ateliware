@@ -7,10 +7,10 @@ class BattleResultDto
 
     private readonly PokemonDto $pokemon1;
     private readonly PokemonDto $pokemon2;
-    private readonly string $winner;
+    private readonly ?PokemonDto $winner;
     private readonly string $message;
 
-    public function __construct(PokemonDto $pokemon1, PokemonDto $pokemon2, ?string $winner, string $message)
+    public function __construct(PokemonDto $pokemon1, PokemonDto $pokemon2, ?PokemonDto $winner, string $message)
     {
         $this->validate($message);
         $this->pokemon1 = $pokemon1;
@@ -29,7 +29,7 @@ class BattleResultDto
         return $this->pokemon2;
     }
 
-    public function getWinner(): string
+    public function getWinner(): ?PokemonDto
     {
         return $this->winner;
     }
