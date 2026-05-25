@@ -7,21 +7,19 @@ use App\Exceptions\HttpNotFoundException;
 use App\Services\PokeApiClient;
 use App\Services\PokemonBattleService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class PokemonController
 {
-
-    private PokeApiClient $pokeApiClient;
     private int $limit = 100;
 
+    public function __construct(
+        private readonly PokeApiClient $pokeApiClient,
+        private readonly PokemonBattleService $pokemonBattleService
+    ) {}
 
-    public function __construct()
-    {
-        $this->pokeApiClient = new PokeApiClient();
-    }
-
-    public function list(Request $request)
+    public function list(Request $request): JsonResponse
     {
         try {
             $page = preg_replace('/[^0-9]/', '', $request->query('page'));
@@ -32,7 +30,7 @@ class PokemonController
 
             $result = $this->pokeApiClient->fetch($this->limit, $page * $this->limit);
 
-            return response([
+            return response()->json([
                 'data' => array_map(function ($item) {
                     return [
                         "name" => $item['name'],
@@ -43,24 +41,21 @@ class PokemonController
                 'next' => url()->current() . '?page=' . ($page + 1),
                 'previous' => $page == 0 ? null : url()->current() . '?page=' . ($page - 1),
                 'status' => 'success'
-            ], 200)
-                ->header('Content-Type', 'application/json');
+            ], 200);
         } catch (HttpBadRequestException $e) {
-            return response([
+            return response()->json([
                 'message' => $e->getMessage(),
                 'status' => 'error'
-            ], 400)
-                ->header('Content-Type', 'application/json');
-        } catch (\Throwable $th) {
-            return response([
+            ], 400);
+        } catch (Throwable $th) {
+            return response()->json([
                 'message' => "Ocorreu um erro ao processar a solicitação. Tente novamente mais tarde.",
                 'status' => 'error'
-            ], 500)
-                ->header('Content-Type', 'application/json');
+            ], 500);
         }
     }
 
-    public function getPokemon(Request $request)
+    public function getPokemon(Request $request): JsonResponse
     {
         try {
             $pokemonName = $request->query('name');
@@ -71,35 +66,30 @@ class PokemonController
 
             $pokemon = $this->pokeApiClient->fetchPokemon($pokemonName);
 
-            return response([
+            return response()->json([
                 'data' => $pokemon->toArray(),
                 'status' => 'success'
-            ], 200)
-                ->header('Content-Type', 'application/json');
+            ], 200);
         } catch (HttpBadRequestException $e) {
-            return response([
+            return response()->json([
                 'message' => $e->getMessage(),
                 'status' => 'error'
-            ], 400)
-                ->header('Content-Type', 'application/json');
+            ], 400);
         } catch (HttpNotFoundException $e) {
-            return response([
+            return response()->json([
                 'message' => $e->getMessage(),
                 'status' => 'error'
-            ], 404)
-                ->header('Content-Type', 'application/json');
-        } catch (\Throwable $th) {
-            return response([
+            ], 404);
+        } catch (Throwable $th) {
+            return response()->json([
                 'message' => "Resposta inválida da PokeAPI. Tente novamente mais tarde.",
                 'status' => 'error'
-            ], 502)
-                ->header('Content-Type', 'application/json');
+            ], 502);
         }
     }
 
-    public function battle(Request $request)
+    public function battle(Request $request): JsonResponse
     {
-
         try {
             $pokemon1 = $request->query('pokemon1');
             $pokemon2 = $request->query('pokemon2');
@@ -108,10 +98,9 @@ class PokemonController
                 throw new HttpBadRequestException('Os nomes dos Pokémon não podem ser vazios.');
             }
 
-            $battle = new PokemonBattleService($pokemon1, $pokemon2);
-            $result = $battle->runBattle();
+            $result = $this->pokemonBattleService->runBattle($pokemon1, $pokemon2);
 
-            return response([
+            return response()->json([
                 'data' => [
                     'pokemon1' => $result->getPokemon1()->toArray(),
                     'pokemon2' => $result->getPokemon2()->toArray(),
@@ -119,20 +108,22 @@ class PokemonController
                     'message' => $result->getMessage()
                 ],
                 'status' => 'success'
-            ], 200)
-                ->header('Content-Type', 'application/json');
+            ], 200);
         } catch (HttpBadRequestException $e) {
-            return response([
+            return response()->json([
                 'message' => $e->getMessage(),
                 'status' => 'error'
-            ], 400)
-                ->header('Content-Type', 'application/json');
-        } catch (\Throwable $th) {
-            return response([
+            ], 400);
+        } catch (HttpNotFoundException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => 'error'
+            ], 404);
+        } catch (Throwable $th) {
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 'error'
-            ], 500)
-                ->header('Content-Type', 'application/json');
+            ], 500);
         }
     }
 }

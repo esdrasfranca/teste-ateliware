@@ -5,82 +5,113 @@ namespace App\Services;
 use App\DTOs\PokemonDto;
 use App\Exceptions\HttpBadRequestException;
 use App\Exceptions\HttpNotFoundException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Pool;
 use Exception;
 
 class PokeApiClient
 {
-
     private string $baseUrl = 'https://pokeapi.co/api/v2/pokemon';
 
-    public function fetch(int $limit = 100, int $offset = 0): array
+    /**
+     * Busca um único Pokémon
+     */
+    public function fetchPokemon(string $pokemonName): PokemonDto
     {
-        // Chamada a API externa
-        $curl = curl_init("{$this->baseUrl}?limit={$limit}&offset={$offset}");
-        curl_setopt($curl, CURLOPT_HTTPGET, 1);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($curl);
+        $name = $this->normalizeName($pokemonName);
+        $response = Http::get("{$this->baseUrl}/{$name}");
 
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if ($response->status() === 404) {
+            throw new HttpNotFoundException("O Pokémon '{$pokemonName}' não existe.");
+        }
 
-        if ($httpCode != 200) {
+        if ($response->failed()) {
             throw new Exception('Falha na comunicação com a PokéAPI. Tente mais tarde.');
         }
 
-        $data = json_decode($response, true);
-
-        return $data['results'];
+        return $this->parseResponse($response->json());
     }
-    public function fetchPokemon(string $pokemonName): PokemonDto
-    {
 
-        // Torna nome do pokemon em minúscula [Requisito Funcional 1 / Detalhe Técnico 3]
+    /**
+     * Busca em forma paginada
+     */
+    public function fetch(int $limit = 100, int $offset = 0): array
+    {
+        $response = Http::get($this->baseUrl, ['limit' => $limit, 'offset' => $offset]);
+
+        if ($response->failed()) {
+            throw new Exception('Falha na comunicação com a PokéAPI. Tente mais tarde.');
+        }
+
+        return $response->json()['results'] ?? [];
+    }
+
+    /**
+     * Executa a busca concorrente de dois Pokémons
+     */
+    public function fetchConcurrent(string $pokemonName1, string $pokemonName2): array
+    {
+        $name1 = $this->normalizeName($pokemonName1);
+        $name2 = $this->normalizeName($pokemonName2);
+
+        $responses = Http::pool(function (Pool $pool) use ($name1, $name2) {
+            return [
+                $pool->as('p1')->get("{$this->baseUrl}/{$name1}"),
+                $pool->as('p2')->get("{$this->baseUrl}/{$name2}"),
+            ];
+        });
+
+        $this->validateResponse($responses['p1'], $pokemonName1);
+        $this->validateResponse($responses['p2'], $pokemonName2);
+
+        return [
+            $this->parseResponse($responses['p1']->json()),
+            $this->parseResponse($responses['p2']->json())
+        ];
+    }
+
+    /**
+     * Auxiliar para processar a resposta e transformar em PokemonDto
+     */
+    public function parseResponse(array $data): PokemonDto
+    {
+        $hp = collect($data['stats'] ?? [])->first(function ($stat) {
+            return ($stat['stat']['name'] ?? '') === 'hp';
+        })['base_stat'] ?? 0;
+
+        return new PokemonDto(
+            $data['name'] ?? 'unknown',
+            $hp,
+            $data['sprites']['front_default'] ?? '',
+            $data['types'][0]['type']['name'] ?? 'unknown',
+            $data['stats'][0]['base_stat'] ?? 0,
+            $data['height'] ?? 0,
+            $data['weight'] ?? 0
+        );
+    }
+
+    /**
+     * Normaliza e valida o nome do Pokémon antes da requisição
+     */
+    public function normalizeName(string $pokemonName): string
+    {
         $pokemonNameNormalize = strtolower(trim($pokemonName));
 
         if (empty($pokemonNameNormalize)) {
             throw new HttpBadRequestException('O nome do Pokémon não pode ser vazio.');
         }
 
-        // Chamada a API externa
-        $curl = curl_init("{$this->baseUrl}/{$pokemonNameNormalize}");
-        curl_setopt($curl, CURLOPT_HTTPGET, 1);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($curl);
+        return $pokemonNameNormalize;
+    }
 
-        // Valida se não houve erro com a chamada
-        if (!$response) {
+    private function validateResponse($response, string $originalName): void
+    {
+        if ($response->status() === 404) {
+            throw new HttpNotFoundException("O Pokémon '{$originalName}' não existe.");
+        }
+
+        if ($response->failed()) {
             throw new Exception('Falha na comunicação com a PokéAPI. Tente mais tarde.');
         }
-
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-        if ($httpCode == 404) {
-            throw new HttpNotFoundException("O Pokémon '{$pokemonName}' não existe.");
-        }
-
-        $data = json_decode($response, true);
-
-        $dataProcessed = array_find($data['stats'], function ($stat) {
-            // Busca o valor do HP (hit points) do Pokémon [Detalhe Técnico 5]
-            if ($stat['stat']['name'] === 'hp') {
-                return $stat['base_stat'];
-            }
-            return 0;
-        });
-
-        // Hit points (HP) do Pokémon [Requisito Funcional 3]
-        $hp = $dataProcessed['base_stat'];
-
-        // Retorna objeto 
-        return new PokemonDto(
-            $data['name'],
-            $hp,
-            $data['sprites']['front_default'],
-            $data['types'][0]['type']['name'],
-            $data['stats'][0]['base_stat'],
-            $data['height'],
-            $data['weight']
-        );
     }
 }
