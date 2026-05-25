@@ -4,6 +4,7 @@ var listModal = [];
 var pokemon1 = null;
 var pokemon2 = null;
 var cardRef = null;
+var currentImage = null;
 
 $(document).ready(function () {
     $('#btnLutar').click(function () {
@@ -35,6 +36,12 @@ $(document).ready(function () {
     $('#modalPesquisa').on('hide.bs.modal', function () {
         if ((cardRef == 'card-1' && pokemon1 == null) || (cardRef == 'card-2' && pokemon2 == null)) {
             $(`[data-card-ref="${cardRef}"]`).html('<span class="text-muted text-center">Clique para escolher...</span>');
+        } else {
+            $(`[data-card-ref="${cardRef}"]`).html('');
+            $('<img>', {
+                class: "img-resultado",
+                src: currentImage,
+            }).appendTo(`[data-card-ref="${cardRef}"]`);
         }
 
         $('#list-group-prokemons').html('');
@@ -50,6 +57,7 @@ $(document).ready(function () {
 
     $(".card-pokemon").on('click', function () {
         cardRef = $(this).data('card-ref')
+        currentImage = $(this).find('img').attr('src');
 
         $(`[data-card-ref="${cardRef}"]`).html('');
 
