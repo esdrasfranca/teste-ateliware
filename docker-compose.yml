@@ -8,6 +8,9 @@ services:
     container_name: ateliware-bff-app
     restart: unless-stopped
     working_dir: /var/www/html
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     volumes:
       - ./backend:/var/www/html
 
