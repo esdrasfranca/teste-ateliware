@@ -116,9 +116,7 @@ Após o deploy dos containers, o avaliador pode acessar:
 
 ##  Endpoints API:
 
-```
-Para testar apenas a API, foi incluída uma collection do Postman com todos os endpoints configurados. O arquivo encontra-se na raiz do projeto backend com o nome de Ateliware.postman_collection.json
-```
+> Para testar apenas a API, foi incluída uma collection do Postman com todos os endpoints configurados. O arquivo encontra-se na raiz do projeto backend com o nome de Ateliware.postman_collection.json
 
 - [GET] http://localhost:8000/api/pokemon?name=[NOME_POKEMON]
 ```text
