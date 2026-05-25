@@ -3,8 +3,10 @@
 namespace Tests\Unit;
 
 use App\DTOs\BattleResultDto;
+use App\DTOs\PokemonDto;
 // use App\DTOs\PokemonDto;
 use App\Services\PokemonBattleService;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class PokemonBattleTest extends TestCase
@@ -20,7 +22,7 @@ class PokemonBattleTest extends TestCase
         $result = $battle->runBattle();
 
         $this->assertInstanceOf(BattleResultDto::class, $result);
-        $this->assertEquals('bulbasaur', $result->getWinner());
+        $this->assertEquals('bulbasaur', $result->getWinner()->getName());
         $this->assertEquals('Bulbasaur venceu!', $result->getMessage());
     }
 
@@ -35,7 +37,7 @@ class PokemonBattleTest extends TestCase
         $result = $battle->runBattle();
 
         $this->assertEmpty($result->getWinner());
-
+        $this->assertThat($result->getWinner(), Assert::isNull());
         $this->assertEquals('Empate', $result->getMessage());
     }
 }
