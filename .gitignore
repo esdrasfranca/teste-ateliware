@@ -1,5 +1,5 @@
 .idea/
 .vscode/
-backend/.env
+# backend/.env
 backend/vendor/
 .phpunit.result.cache
