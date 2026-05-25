@@ -33,7 +33,10 @@ $(document).ready(function () {
     // })
 
     $('#modalPesquisa').on('hide.bs.modal', function () {
-        // $(`[data-card-ref="${cardRef}"]`).html('<span class="text-muted text-center">Clique para escolher...</span>');
+        if ((cardRef == 'card-1' && pokemon1 == null) || (cardRef == 'card-2' && pokemon2 == null)) {
+            $(`[data-card-ref="${cardRef}"]`).html('<span class="text-muted text-center">Clique para escolher...</span>');
+        }
+
         $('#list-group-prokemons').html('');
     });
 
@@ -48,12 +51,12 @@ $(document).ready(function () {
     $(".card-pokemon").on('click', function () {
         cardRef = $(this).data('card-ref')
 
-        // $(`[data-card-ref="${cardRef}"]`).html('');
+        $(`[data-card-ref="${cardRef}"]`).html('');
 
-        // $('<img>', {
-        //     src: "./assets/img/load.gif",
-        //     style: "width: 50px;"
-        // }).appendTo(`[data-card-ref="${cardRef}"]`);
+        $('<img>', {
+            src: "./assets/img/load.gif",
+            style: "width: 50px;"
+        }).appendTo(`[data-card-ref="${cardRef}"]`);
 
         if (listModal.length == 0) {
             if (!next) {
