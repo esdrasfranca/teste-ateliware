@@ -117,6 +117,8 @@ function selectPokemon(element) {
             $(`[data-card-name="${currentCard}"]`).html(response.data.name);
         })
         .fail(function (error) {
+            alert(error.responseJSON.message);
+            $(`[data-card-ref="${currentCard}"]`).html('<span class="text-muted text-center">Clique para escolher...</span>');
             console.error("Erro ao buscar dados para o card " + currentCard, error);
         });
 }
