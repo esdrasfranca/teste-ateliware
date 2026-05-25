@@ -37,9 +37,6 @@ class PokeApiClient
         // Torna nome do pokemon em minúscula [Requisito Funcional 1 / Detalhe Técnico 3]
         $pokemonNameNormalize = strtolower(trim($pokemonName));
 
-        // Remove caracteres especiais
-        $pokemonNameNormalize = preg_replace('/[^a-z]/', '', $pokemonNameNormalize);
-
         if (empty($pokemonNameNormalize)) {
             throw new HttpBadRequestException('O nome do Pokémon não pode ser vazio.');
         }
