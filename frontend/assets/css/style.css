@@ -1,0 +1,51 @@
+body {
+    background-color: #eee;
+    background-image: url('../img/background.jpeg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+
+.card-pokemon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 250px;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 8px;
+    cursor: pointer;
+}
+
+.card-pokemon-blue {
+    border-color: #3b68a9;
+}
+
+.card-pokemon-red {
+    border-color: #d14246;
+}
+
+.card-pokemon img {
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.img-resultado {
+    /* display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box; */
+    height: 250px;
+}
+
+.img-resultado img {
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
