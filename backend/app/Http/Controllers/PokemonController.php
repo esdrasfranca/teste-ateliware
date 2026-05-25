@@ -21,20 +21,6 @@ class PokemonController
         $this->pokeApiClient = new PokeApiClient();
     }
 
-    public function index()
-    {
-        // Descrição da API exibida na entrada do método index
-        echo "Bem-vindo à API Pokédex: consulte detalhes de Pokémon e realize batalhas simuladas usando endpoints REST.";
-        echo "\n";
-        echo "\n";
-        echo "Endpoints disponíveis:";
-        echo "\n";
-        echo "- api/pokemon?name=[NOME_DO_POKEMON]";
-        echo "\n";
-        echo "- api/battle?pokemon1=[NOME_DO_POKEMON_1]&pokemon2=[NOME_DO_POKEMON_2]";
-        echo "\n";
-    }
-
     public function list(Request $request)
     {
         try {
