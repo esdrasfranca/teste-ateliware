@@ -13,6 +13,8 @@ class PokemonController
 {
 
     private PokeApiClient $pokeApiClient;
+    private int $limit = 100;
+
 
     public function __construct()
     {
@@ -33,7 +35,46 @@ class PokemonController
         echo "\n";
     }
 
-    public function getPokemon(Request $request, Response $response)
+    public function list(Request $request)
+    {
+        try {
+            $page = preg_replace('/[^0-9]/', '', $request->query('page'));
+
+            if (empty($page)) {
+                $page = 0;
+            }
+
+            $result = $this->pokeApiClient->fetch($this->limit, $page * $this->limit);
+
+            return response([
+                'data' => array_map(function ($item) {
+                    return [
+                        "name" => $item['name'],
+                        "url" => url('api/pokemon?name=' . $item['name'])
+                    ];
+                }, $result),
+                'count' => count($result),
+                'next' => url()->current() . '?page=' . ($page + 1),
+                'previous' => $page == 0 ? null : url()->current() . '?page=' . ($page - 1),
+                'status' => 'success'
+            ], 200)
+                ->header('Content-Type', 'application/json');
+        } catch (HttpBadRequestException $e) {
+            return response([
+                'message' => $e->getMessage(),
+                'status' => 'error'
+            ], 400)
+                ->header('Content-Type', 'application/json');
+        } catch (\Throwable $th) {
+            return response([
+                'message' => "Ocorreu um erro ao processar a solicitação. Tente novamente mais tarde.",
+                'status' => 'error'
+            ], 500)
+                ->header('Content-Type', 'application/json');
+        }
+    }
+
+    public function getPokemon(Request $request)
     {
         try {
             $pokemonName = $request->query('name');
@@ -70,7 +111,7 @@ class PokemonController
         }
     }
 
-    public function battle(Request $request, Response $response)
+    public function battle(Request $request)
     {
 
         try {
@@ -88,7 +129,7 @@ class PokemonController
                 'data' => [
                     'pokemon1' => $result->getPokemon1()->toArray(),
                     'pokemon2' => $result->getPokemon2()->toArray(),
-                    'winner' => $result->getWinner(),
+                    'winner' => $result->getWinner() ? $result->getWinner()->toArray() : null,
                     'message' => $result->getMessage()
                 ],
                 'status' => 'success'
