@@ -12,6 +12,25 @@ class PokeApiClient
 
     private string $baseUrl = 'https://pokeapi.co/api/v2/pokemon';
 
+    public function fetch(int $limit = 100, int $offset = 0): array
+    {
+        // Chamada a API externa
+        $curl = curl_init("{$this->baseUrl}?limit={$limit}&offset={$offset}");
+        curl_setopt($curl, CURLOPT_HTTPGET, 1);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($curl);
+
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        if ($httpCode != 200) {
+            throw new Exception('Falha na comunicação com a PokéAPI. Tente mais tarde.');
+        }
+
+        $data = json_decode($response, true);
+
+        return $data['results'];
+    }
     public function fetchPokemon(string $pokemonName): PokemonDto
     {
 
