@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "e024d35b-0708-480d-b2c3-960acf928b9b",
+    "name": "Ateliware",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7873282",
+    "_collection_link": "https://go.postman.co/collection/7873282-e024d35b-0708-480d-b2c3-960acf928b9b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Pokemon",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/pokemon?name=Nidoran-m",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pokemon"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": "Nidoran-m"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Pokemons - List",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/pokemons?page=0",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pokemons"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Pokemon Battle",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/battle?pokemon1=Pikachu&pokemon2=Charizard",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "battle"
+          ],
+          "query": [
+            {
+              "key": "pokemon1",
+              "value": "Pikachu"
+            },
+            {
+              "key": "pokemon2",
+              "value": "Charizard"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Pokemon Battle - Empate",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/battle?pokemon1=Charizard&pokemon2=Charizard",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "battle"
+          ],
+          "query": [
+            {
+              "key": "pokemon1",
+              "value": "Charizard"
+            },
+            {
+              "key": "pokemon2",
+              "value": "Charizard"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
