@@ -141,7 +141,3 @@ Para rodar os testes dentro do container:
 ```bash
 docker compose exec app php artisan test
 ```
-
----
-
-Esse README foi elaborado para oferecer uma visão técnica completa, permitindo ao avaliador rodar o projeto com segurança e analisar a decisão arquitetural BFF em um contexto de monorepo.
