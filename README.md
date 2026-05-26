@@ -80,7 +80,7 @@ Siga este fluxo à prova de falhas para executar o projeto.
 1. Clonar o repositório público e acessar a pasta raiz:
 
 ```bash
-git clone https://github.com/esdrasfranca/teste-ateliware.git && cd <NOME_DA_PASTA>
+git clone https://github.com/esdrasfranca/teste-ateliware.git && cd teste-ateliware
 ```
 
 2. Baixar as imagens e subir todos os containers:
